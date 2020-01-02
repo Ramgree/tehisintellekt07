@@ -8,7 +8,7 @@ def page_parser(url):
     content = request.urlopen(url)
     raw_html = content.read()
     soup = bf(raw_html, 'html.parser')
-    objects = soup.find_all("tr", class_='object-item')
+    objects = soup.find_all('tr', class_='object-item')
     parse_objects(objects)
 
 
@@ -21,20 +21,20 @@ def parse_objects(objects):
 def parse_single_object(object):
     all_info = {}
 
-    all_info["area"] = getInfo(object, "object-m2")
-    all_info["month_price"] = getInfo(object, "object-price-value")
-    location, all_info["link"] = getAddress(object)
+    all_info['area'] = getInfo(object, 'object-m2')
+    all_info['month_price'] = getInfo(object, 'object-price-value')
+    location, all_info['link'] = getAddress(object)
 
-    address = location.split(",")
-    all_info["state"] = address[0]
-    all_info["city"] = address[1]
+    address = location.split(',')
+    all_info['state'] = address[0]
+    all_info['city'] = address[1]
 
-    all_info["year"], all_info["condition"], all_info["energyscore"] = ap.advertismentParser(all_info["link"])
+    all_info['year'], all_info['condition'], all_info['energyscore'] = ap.advertismentParser(all_info['link'])
 
     if len(address) < 4:
-        all_info["district"] = ""
+        all_info['district'] = ''
         return all_info
-    all_info["district"] = address[2]
+    all_info['district'] = address[2]
     return all_info
 
 
@@ -44,7 +44,7 @@ def getInfo(tag, type):
 
 
 def getAddress(tag):
-    res = tag.find(class_="object-title-a")
+    res = tag.find(class_='object-title-a')
     link = res.get('href')
     text = res.text
     location = text.strip().replace(u'\xa0', '')
