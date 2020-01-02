@@ -1,35 +1,41 @@
 from urllib import request  # u tebya tam reqrequst bql   m e h
 from bs4 import BeautifulSoup as bf  # srsly?
 import re
-
+import advertisementParser as ap
+import csvOperations as co
 
 def page_parser(url):
     content = request.urlopen(url)
     raw_html = content.read()
     soup = bf(raw_html, 'html.parser')
     objects = soup.find_all("tr", class_='object-item')
-    return parse_objects(objects)
+    parse_objects(objects)
 
 
 def parse_objects(objects):
     information = []
     for object in objects:
-        information.append(parse_single_object(object))
-    return information
+        co.writeRow(parse_single_object(object))
 
 
 def parse_single_object(object):
-    area = getInfo(object, "object-m2")
-    month_price = getInfo(object, "object-price-value")
-    location, link = getAddress(object)
+    all_info = {}
+
+    all_info["area"] = getInfo(object, "object-m2")
+    all_info["month_price"] = getInfo(object, "object-price-value")
+    location, all_info["link"] = getAddress(object)
 
     address = location.split(",")
-    state = address[0]
-    city = address[1]
+    all_info["state"] = address[0]
+    all_info["city"] = address[1]
+
+    all_info["year"], all_info["condition"], all_info["energyscore"] = ap.advertismentParser(all_info["link"])
+
     if len(address) < 4:
-        return area, month_price, state, city, "", link
-    distict = address[2]
-    return area, month_price, state, city, distict, link
+        all_info["district"] = ""
+        return all_info
+    all_info["district"] = address[2]
+    return all_info
 
 
 def getInfo(tag, type):
