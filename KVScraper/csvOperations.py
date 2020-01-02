@@ -1,7 +1,7 @@
 import csv
 import os
-import fileinput
-import copy
+import pandas as pd
+import numpy as np
 
 FILENAME = 'kvObjects.csv'
 
@@ -26,8 +26,13 @@ def writeRow(information):
 
 
 def toUpperCase():
-    for line in fileinput.input(FILENAME, inplace=1):
-        print(line.upper(), end='')
+    data = pd.read_csv(FILENAME)
+    data.columns = map(str.upper, data.columns)
+    data = data.applymap(lambda s:s.upper() if type(s) == str else s)
+    data['LINK'] = data['LINK'].str.lower()
+    data['AREA'] = data['AREA'].apply(lambda x: int(x) if x == x else "")
+    data['YEAR'] = data['YEAR'].apply(lambda x: int(x) if x == x else "")
+    data.to_csv(FILENAME, index=False)
 
 if __name__ == '__main__':
     toUpperCase()
