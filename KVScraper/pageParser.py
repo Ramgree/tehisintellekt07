@@ -4,6 +4,7 @@ import re
 import advertisementParser as ap
 import csvOperations as co
 
+
 def page_parser(url):
     content = request.urlopen(url)
     raw_html = content.read()
@@ -29,7 +30,8 @@ def parse_single_object(object):
     all_info['state'] = address[0]
     all_info['city'] = address[1]
 
-    all_info['year'], all_info['condition'], all_info['energyscore'] = ap.advertismentParser(all_info['link'])
+    all_info['year'], all_info['condition'], all_info['energyscore'] = ap.advertismentParser(
+        all_info['link'])
 
     if len(address) < 4:
         all_info['district'] = ''
