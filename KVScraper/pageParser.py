@@ -22,7 +22,14 @@ def parse_single_object(object):
     area = getInfo(object, "object-m2")
     month_price = getInfo(object, "object-price-value")
     location, link = getAddress(object)
-    return area, month_price, location, link
+
+    address = location.split(",")
+    state = address[0]
+    city = address[1]
+    if len(address) < 4:
+        return area, month_price, state, city, "", link
+    distict = address[2]
+    return area, month_price, state, city, distict, link
 
 
 def getInfo(tag, type):
